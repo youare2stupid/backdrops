@@ -21,7 +21,7 @@ function hashOf(files) {
 export function bundle() {
   const files = ENGINES.concat(CORE);
   const source = files.map(read).join('\n');
-  const banner = '/* backdrops v' + pkg.version + ' - BSD-3-Clause - https://github.com/youare2stupid/backdrops */\n';
+  const banner = '/* backdrops v' + pkg.version + ' - MIT - https://github.com/youare2stupid/backdrops */\n';
   const module_ = banner + source.replace(/^\s*import[^;]+;\s*$/gm, '').replace(/\n{3,}/g, '\n\n');
   const global_ =
     banner +

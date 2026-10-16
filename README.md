@@ -195,4 +195,4 @@ code wrapped for a plain `<script>` tag, and is generated, never edited.
 
 ## License
 
-BSD-3-Clause
+MIT

@@ -1,7 +1,7 @@
 {
   "name": "backdrops",
   "version": "0.1.0",
-  "description": "Configurable animated backgrounds for the web: liquid noise fields, halftone dots and grain. One script tag, no build, no dependencies.",
+  "description": "Configurable animated backgrounds for the web: liquid noise fields, melting blobs, curtains of light. One script tag, no build, no dependencies.",
   "type": "module",
   "main": "dist/backdrops.js",
   "module": "src/backdrops.js",
@@ -33,7 +33,7 @@
     "animation",
     "generative"
   ],
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "author": "youare2stupid",
   "repository": {
     "type": "git",

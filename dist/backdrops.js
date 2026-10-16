@@ -1,4 +1,4 @@
-/* backdrops v0.1.0 - BSD-3-Clause - https://github.com/youare2stupid/backdrops */
+/* backdrops v0.1.0 - MIT - https://github.com/youare2stupid/backdrops */
 (function (root) {
 const LIQUID = {
   id: 'liquid',
