@@ -707,7 +707,13 @@ export function create(target, options) {
       pause();
       return api;
     },
-    redraw: function () {
+    redraw: function (at) {
+      if (typeof at === 'number') {
+        time = at;
+        render();
+        if (!still) { lastStamp = 0; schedule(); }
+        return api;
+      }
       render();
       return api;
     },

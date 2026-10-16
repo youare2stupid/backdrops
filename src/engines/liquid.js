@@ -225,6 +225,7 @@ export const LIQUID = {
     var stopCount = 2;
     var size = { w: 2, h: 2, dpr: 1 };
     var frame = 0;
+    var lastTime = 0;
 
     function uploadStops(pal) {
       var stops = pal.stops;
@@ -241,7 +242,9 @@ export const LIQUID = {
     return {
       draw: function (state) {
         if (!config) return;
-        if (++frame % Math.max(1, Math.round(config.fieldEvery)) === 1 || config.fieldEvery <= 1) {
+        var jump = Math.abs(state.time - lastTime) > 0.5;
+        lastTime = state.time;
+        if (jump || ++frame % Math.max(1, Math.round(config.fieldEvery)) === 1 || config.fieldEvery <= 1) {
           gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
           gl.viewport(0, 0, fw, fh);
           gl.useProgram(field.program);

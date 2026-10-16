@@ -3,10 +3,13 @@
 Animated backgrounds for the web. A liquid noise field, halftone dots and film grain, driven by one config
 object. No dependencies, no build step for you: one script tag, or one import.
 
-![liquid, dark palette](docs/dark.jpg)
-![liquid, light palette](docs/light.jpg)
-![goo](docs/goo.jpg)
-![grid](docs/grid.jpg)
+![liquid](docs/liquid.gif)
+![goo](docs/goo.gif)
+![aurora](docs/aurora.gif)
+
+The demo, where the effect comes first and the palette second, with the snippet for the pair:
+
+![the demo](docs/demo.jpg)
 
 ## Use it
 
