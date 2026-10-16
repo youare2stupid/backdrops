@@ -1,7 +1,8 @@
 # backdrops
 
-Animated backgrounds for the web. A liquid noise field, halftone dots and film grain, driven by one config
-object. No dependencies, no build step for you: one script tag, or one import.
+Animated backgrounds for the web, driven by one config object: a liquid noise field with halftone dots and
+grain, blobs that melt into each other, curtains of light. No dependencies, and no build step for you:
+one script tag, or one import.
 
 ![liquid](docs/liquid.gif)
 ![goo](docs/goo.gif)
