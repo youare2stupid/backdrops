@@ -157,6 +157,22 @@ Backdrops.page({ effect: 'waves' });
 `goo` options: `blobCount`, `blobSize`, `spread`, `wobble`, `softness`, `blur`, `threshold`,
 `background`, `renderScale`, `debug: 'raw'`.
 
+## Text that follows the field
+
+The layer sits under your content, so anything above it can read the field through a blend mode:
+
+```css
+header h1,
+header p {
+  color: #fff;
+  mix-blend-mode: difference;
+}
+```
+
+White then turns dark exactly where a light part of the field passes behind it, and takes the opposite hue
+on coloured parts. `exclusion` is a softer version of the same idea, `overlay` and `soft-light` follow the
+tone instead of inverting. Keep the blended elements out of isolated stacking contexts and above the layer.
+
 ## Gallery
 
 `demo/index.html` shows eight ready made looks on both engines. Pick one and the snippet for it is right
