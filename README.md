@@ -44,7 +44,8 @@ Inside one element, with no JavaScript of your own:
 <script>Backdrops.ready();</script>
 ```
 
-The layer never eats clicks, so your content stays fully usable.
+The layer never eats clicks, so your content stays fully usable. In this mode the host gives the element
+`position: relative` and `isolation: isolate`, so the backdrop stays behind its own content.
 
 ## What you can change
 

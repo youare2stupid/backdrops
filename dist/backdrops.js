@@ -855,19 +855,20 @@ function create(target, options) {
     holder.style.cssText = 'position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1';
     document.body.appendChild(holder);
     created.push(holder);
-  } else if (window.getComputedStyle(el).position === 'static') {
-    el.style.position = 'relative';
+  } else {
+    if (window.getComputedStyle(el).position === 'static') el.style.position = 'relative';
+    el.style.isolation = 'isolate';
   }
 
   var canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none';
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:-1';
   canvas.setAttribute('aria-hidden', 'true');
   if (pageMode) holder.appendChild(canvas);
   else holder.insertBefore(canvas, holder.firstChild);
   created.push(canvas);
 
   var shade = document.createElement('div');
-  shade.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+  shade.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:-1';
   holder.appendChild(shade);
   created.push(shade);
 
