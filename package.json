@@ -1,0 +1,46 @@
+{
+  "name": "backdrops",
+  "version": "0.1.0",
+  "description": "Configurable animated backgrounds for the web: liquid noise fields, halftone dots and grain. One script tag, no build, no dependencies.",
+  "type": "module",
+  "main": "dist/backdrops.js",
+  "module": "src/backdrops.js",
+  "exports": {
+    ".": {
+      "import": "./src/backdrops.js",
+      "default": "./dist/backdrops.js"
+    },
+    "./src": "./src/backdrops.js"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "test": "node --test",
+    "serve": "node tools/serve.mjs"
+  },
+  "keywords": [
+    "background",
+    "canvas",
+    "webgl",
+    "shader",
+    "noise",
+    "halftone",
+    "animation",
+    "generative"
+  ],
+  "license": "BSD-3-Clause",
+  "author": "youare2stupid",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/youare2stupid/backdrops.git"
+  },
+  "homepage": "https://github.com/youare2stupid/backdrops",
+  "bugs": {
+    "url": "https://github.com/youare2stupid/backdrops/issues"
+  }
+}
