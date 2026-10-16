@@ -1,6 +1,6 @@
 import { LIQUID } from './engines/liquid.js';
 import { GOO } from './engines/goo.js';
-import { GRID } from './engines/grid.js';
+import { AURORA } from './engines/aurora.js';
 
 export const VERSION = '0.1.0';
 
@@ -24,6 +24,7 @@ export const DEFAULTS = {
   themeAttribute: 'data-theme',
   themeFade: 700,
   stillFrame: 12,
+  fps: 0,
   pauseWhenHidden: true,
   reducedMotion: 'still',
   autoplay: true,
@@ -42,6 +43,7 @@ export const RANGES = {
   vignette: [0, 1],
   themeFade: [0, 4000],
   stillFrame: [0, 600],
+  fps: [0, 240],
   'dots.pitch': [1, 24],
   'dots.size': [0, 4],
   'dots.jitter': [0, 2],
@@ -50,7 +52,7 @@ export const RANGES = {
   'dots.shade': [0, 1.5]
 };
 
-var registry = { liquid: LIQUID, goo: GOO, grid: GRID };
+var registry = { liquid: LIQUID, goo: GOO, aurora: AURORA };
 
 export function register(engine) {
   if (!engine || !engine.id || typeof engine.mount !== 'function') {
@@ -392,6 +394,8 @@ export function create(target, options) {
   var costSum = 0;
   var costSamples = 0;
   var lastStamp = 0;
+  var lastDraw = 0;
+  var frameCost = 0;
   var time = 0;
   var size = { w: 2, h: 2, dpr: 1 };
   var draw = null;
@@ -472,6 +476,12 @@ export function create(target, options) {
   function tick(now) {
     raf = 0;
     if (disposed || !running || still) return;
+    var config = applied || base;
+    if (config.fps > 0 && lastDraw && now - lastDraw < 1000 / config.fps - 1) {
+      schedule();
+      return;
+    }
+    lastDraw = now;
     if (lastStamp && frames > 25 && !qualityLocked) {
       costSum += now - lastStamp;
       costSamples++;
@@ -491,7 +501,9 @@ export function create(target, options) {
     lastStamp = now;
     stepFade(now);
     draw.resize(measure());
-    draw.draw({ time: still ? (applied || base).stillFrame : time, delta: delta, frame: frames, still: still });
+    var drawStart = window.performance ? performance.now() : 0;
+    draw.draw({ time: still ? config.stillFrame : time, delta: delta, frame: frames, still: still });
+    if (drawStart) frameCost = frameCost ? frameCost * 0.9 + (performance.now() - drawStart) * 0.1 : performance.now() - drawStart;
     frames++;
     fpsFrames++;
     if (!fpsStamp) fpsStamp = now;
@@ -600,7 +612,7 @@ export function create(target, options) {
 
   apply(effective(null));
   try {
-    draw = engine.mount({ canvas: canvas, config: applied, palette: palette, log: log });
+    draw = engine.mount({ canvas: canvas, el: holder, config: applied, palette: palette, log: log });
   } catch (error) {
     log('backdrops: ' + base.effect + ' failed - ' + (error && error.message));
     draw = null;
@@ -705,6 +717,7 @@ export function create(target, options) {
         mode: mode,
         fps: fps,
         frames: frames,
+        frameCost: Math.round(frameCost * 100) / 100,
         quality: quality,
         still: still,
         reduced: reduced,

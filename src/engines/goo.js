@@ -3,17 +3,19 @@ export const GOO = {
   api: '2d',
   defaults: {
     speed: 1,
+    fps: 30,
     blobCount: 18,
     blobSize: 0.16,
     spread: 0.55,
     wobble: 0.45,
     softness: 0.2,
-    blur: 24,
+    blur: 16,
     threshold: 10,
     background: null,
     grain: 0.35,
     seed: 0,
-    renderScale: 0.6,
+    maxPixels: 650000,
+    renderScale: 0.5,
     debug: null
   },
   mount: function (ctx) {
@@ -22,7 +24,9 @@ export const GOO = {
     if (!out) return null;
     var layer = document.createElement('canvas');
     var stage = layer.getContext('2d');
-    if (!stage) return null;
+    var soft = document.createElement('canvas');
+    var sc = soft.getContext('2d');
+    if (!stage || !sc) return null;
     var hasFilter = 'filter' in out && 'filter' in stage;
 
     var config = null;
@@ -35,6 +39,7 @@ export const GOO = {
     var blobs = [];
     var grainTile = null;
     var grainSource = null;
+    var grainPattern = null;
     var seedUsed = null;
 
     function mulberry(seed) {
@@ -72,6 +77,7 @@ export const GOO = {
     function buildGrain() {
       grainTile = null;
       grainSource = null;
+      grainPattern = null;
       if (!config.grain) return;
       var tile = 128;
       grainTile = document.createElement('canvas');
@@ -98,11 +104,14 @@ export const GOO = {
 
     function resize(next) {
       size = next;
+      if (!config) return;
       lw = Math.max(2, Math.round(size.w * config.renderScale));
       lh = Math.max(2, Math.round(size.h * config.renderScale));
       if (layer.width !== lw || layer.height !== lh) {
         layer.width = lw;
         layer.height = lh;
+        soft.width = lw;
+        soft.height = lh;
       }
     }
 
@@ -145,20 +154,29 @@ export const GOO = {
       out.globalAlpha = 1;
       out.filter = 'none';
       if (hasFilter && config.debug !== 'raw') {
-        out.filter = 'blur(' + (config.blur * size.dpr).toFixed(2) + 'px) contrast(' + config.threshold.toFixed(2) + ')';
+        var radius = config.blur * size.dpr * config.renderScale;
+        sc.setTransform(1, 0, 0, 1, 0, 0);
+        sc.globalCompositeOperation = 'source-over';
+        sc.clearRect(0, 0, lw, lh);
+        sc.filter = 'blur(' + radius.toFixed(2) + 'px)';
+        sc.drawImage(layer, 0, 0);
+        sc.filter = 'none';
+        out.filter = 'contrast(' + config.threshold.toFixed(2) + ')';
+        out.drawImage(soft, 0, 0, lw, lh, 0, 0, size.w, size.h);
+        out.filter = 'none';
+      } else {
+        out.drawImage(layer, 0, 0, lw, lh, 0, 0, size.w, size.h);
       }
-      out.drawImage(layer, 0, 0, lw, lh, 0, 0, size.w, size.h);
-      out.filter = 'none';
 
       if (grainSource && config.grain > 0) {
         if (seedUsed !== config.seed) buildGrain();
-        var pattern = out.createPattern(grainSource, 'repeat');
-        if (pattern) {
-          var random = mulberry((state.frame % 12) + 0.37);
-          pattern.setTransform(new DOMMatrix([1, 0, 0, 1, random() * 128 - 64, random() * 128 - 64]));
+        if (!grainPattern) grainPattern = out.createPattern(grainSource, 'repeat');
+        if (grainPattern) {
+          var random = mulberry(((state.frame | 0) % 12) + 0.37);
+          grainPattern.setTransform(new DOMMatrix([1, 0, 0, 1, random() * 128 - 64, random() * 128 - 64]));
           out.globalCompositeOperation = 'overlay';
           out.globalAlpha = Math.min(1, config.grain);
-          out.fillStyle = pattern;
+          out.fillStyle = grainPattern;
           out.fillRect(0, 0, size.w, size.h);
           out.globalAlpha = 1;
           out.globalCompositeOperation = 'source-over';
@@ -180,6 +198,8 @@ export const GOO = {
       dispose: function () {
         stage.setTransform(1, 0, 0, 1, 0, 0);
         stage.clearRect(0, 0, lw, lh);
+        sc.clearRect(0, 0, lw, lh);
+        grainPattern = null;
         blobs = [];
         grainTile = null;
         grainSource = null;

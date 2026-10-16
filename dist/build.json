@@ -1,15 +1,15 @@
 {
   "name": "backdrops",
   "version": "0.1.0",
-  "hash": "0b1558f8d366b0eda3abf37396c7b924622a905889e00c8a406258d5a8707731",
+  "hash": "73f47771cc4292717bb067f59d3e23f6a4511c8e52f207af0fab05075ff1d87c",
   "sources": [
     "src/engines/liquid.js",
     "src/engines/goo.js",
-    "src/engines/grid.js",
+    "src/engines/aurora.js",
     "src/backdrops.js"
   ],
   "bytes": {
-    "module": 48497,
-    "global": 48451
+    "module": 53807,
+    "global": 53761
   }
 }

@@ -7,7 +7,7 @@
     <style>
       :root {
         --ink: #f5f8ff;
-        --dim: rgba(245, 248, 255, 0.6);
+        --dim: rgba(245, 248, 255, 0.62);
         --panel: rgba(8, 12, 18, 0.55);
         --line: rgba(255, 255, 255, 0.16);
         --accent: #9fd0f5;
@@ -15,8 +15,8 @@
       }
       html[data-tone='light'] {
         --ink: #1d1412;
-        --dim: rgba(29, 20, 18, 0.6);
-        --panel: rgba(255, 252, 251, 0.5);
+        --dim: rgba(29, 20, 18, 0.62);
+        --panel: rgba(255, 252, 251, 0.52);
         --line: rgba(29, 20, 18, 0.18);
         --accent: #8c4a3d;
         --code: rgba(255, 255, 255, 0.42);
@@ -36,9 +36,9 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: 24px;
         padding: clamp(20px, 4vw, 64px);
         max-width: 1400px;
-        gap: 24px;
       }
       header { display: grid; gap: 14px; max-width: 34ch; }
       header h1,
@@ -48,8 +48,9 @@
         mix-blend-mode: difference;
       }
       h1 { margin: 0; font-size: clamp(38px, 7vw, 92px); line-height: 0.95; letter-spacing: -0.045em; font-weight: 800; }
-      p { margin: 0; color: var(--dim); font-size: clamp(14px, 1.3vw, 17px); }
-      a { color: var(--ink); }
+      p { margin: 0; font-size: clamp(14px, 1.3vw, 17px); }
+      header p { color: #fff; opacity: 0.82; }
+      a { color: #fff; }
 
       .panel {
         width: min(430px, 100%);
@@ -62,38 +63,40 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.26);
       }
       .panel h2 {
-        margin: 0 0 10px;
-        font-size: 12px;
+        margin: 0 0 8px;
+        font-size: 11.5px;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--dim);
       }
-      .presets {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-      .preset {
+      .panel h2 span { color: var(--accent); }
+      .step + .step { margin-top: 14px; }
+
+      .choices { display: grid; gap: 8px; }
+      .choices--effects { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .choices--palettes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .choice {
         display: grid;
         gap: 6px;
         padding: 8px 9px;
-        text-align: left;
         border: 1px solid var(--line);
         border-radius: 12px;
         background: rgba(255, 255, 255, 0.06);
         color: var(--ink);
         font: inherit;
         font-size: 13px;
+        text-align: left;
         cursor: pointer;
       }
-      .preset:hover { background: rgba(255, 255, 255, 0.14); }
-      .preset[aria-pressed='true'] { border-color: var(--accent); }
-      .preset span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .bar { display: flex; height: 12px; border-radius: 4px; overflow: hidden; }
+      .choice:hover { background: rgba(255, 255, 255, 0.14); }
+      .choice[aria-pressed='true'] { border-color: var(--accent); background: rgba(255, 255, 255, 0.16); }
+      .choice small { color: var(--dim); font-size: 11px; line-height: 1.3; }
+      .bar { display: flex; height: 11px; border-radius: 4px; overflow: hidden; }
       .bar i { flex: 1; }
 
-      .tabs { display: flex; gap: 6px; margin: 14px 0 8px; }
-      .tabs button, .copy {
+      .tabs { display: flex; gap: 6px; margin: 16px 0 8px; }
+      .tabs button,
+      .copy {
         font: inherit;
         font-size: 12.5px;
         padding: 4px 10px;
@@ -112,15 +115,14 @@
         border-radius: 12px;
         background: var(--code);
         font: 11.5px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
-        max-height: 44vh;
+        max-height: 38vh;
         overflow: auto;
         white-space: pre;
       }
-      .note { font-size: 12.5px; color: var(--dim); margin-top: 8px; }
       @media (max-width: 720px) {
-        .stage { justify-content: flex-start; padding-bottom: 60vh; }
+        .stage { justify-content: flex-start; padding-bottom: 62vh; }
         .panel { position: fixed; left: 10px; right: 10px; bottom: 10px; }
-        pre { max-height: 30vh; }
+        pre { max-height: 26vh; }
       }
     </style>
   </head>
@@ -128,165 +130,65 @@
     <main class="stage">
       <header>
         <h1>backdrops</h1>
-        <p>Animated backgrounds for the web. Pick one below and copy the snippet.</p>
+        <p>Animated backgrounds for the web. Pick an effect, then a palette, and copy the snippet.</p>
         <p><a href="./script-tag.html">the same thing from data attributes</a></p>
       </header>
 
       <section class="panel">
-        <h2>ready made</h2>
-        <div class="presets" id="presets"></div>
+        <div class="step">
+          <h2>1 &middot; effect <span id="effect-note"></span></h2>
+          <div class="choices choices--effects" id="effects"></div>
+        </div>
+        <div class="step">
+          <h2>2 &middot; palette</h2>
+          <div class="choices choices--palettes" id="palettes"></div>
+        </div>
         <div class="tabs">
           <button id="tab-js" aria-pressed="true">javascript</button>
           <button id="tab-html" aria-pressed="false">markup</button>
           <button class="copy" id="copy">copy</button>
         </div>
         <pre id="code"></pre>
-        <p class="note" id="note"></p>
       </section>
     </main>
 
     <script type="module">
       import Backdrops from '../src/backdrops.js';
 
-      const PRESETS = [
+      const ENGINES = [
         {
-          id: 'deep-water',
-          label: 'Deep water',
-          effect: 'liquid',
-          options: {
-            colors: ['#072563', '#133f8b', '#3e7bcd', '#5f9dea'],
-            contrast: 1.5,
-            grain: 0.9,
-            vignette: 0.16
-          }
+          id: 'liquid',
+          label: 'liquid',
+          note: 'WebGL noise field, halftone dots, grain',
+          options: { contrast: 1.42, grain: 0.85, vignette: 0.14 }
         },
         {
-          id: 'blush',
-          label: 'Blush',
-          effect: 'liquid',
-          options: {
-            colors: ['#b4828a', '#d29596', '#dcabaa', '#e7b6b5'],
-            contrast: 1.3,
-            grain: 0.7,
-            vignette: 0.08
-          }
-        },
-        {
-          id: 'mint-grove',
-          label: 'Mint grove',
-          effect: 'liquid',
-          options: {
-            colors: ['#04231a', '#0b6b52', '#17c493', '#c9f7e7'],
-            contrast: 1.35,
-            warp: 3.4,
-            grain: 0.8
-          }
-        },
-        {
-          id: 'sunset-haze',
-          label: 'Sunset haze',
-          effect: 'liquid',
-          options: {
-            colors: ['#2b0b3a', '#7a1f56', '#e0563f', '#ffc36b'],
-            scale: 2.8,
-            contrast: 1.45,
-            dots: { pitch: 4, size: 1.5 }
-          }
-        },
-        {
-          id: 'graphite',
-          label: 'Graphite',
-          effect: 'liquid',
-          options: {
-            colors: ['#0b0b0c', '#3a3a3f', '#8a8a92', '#f2f2f4'],
-            contrast: 1.6,
-            grain: 1.1,
-            dots: { on: false }
-          }
+          id: 'goo',
+          label: 'goo',
+          note: 'Canvas blobs that melt together',
+          options: { blobCount: 18, blobSize: 0.16, spread: 0.55, blur: 24, threshold: 10 }
         },
         {
           id: 'aurora',
-          label: 'Aurora',
-          effect: 'goo',
-          options: {
-            colors: ['#021a2a', '#0a6b7a', '#2fd0b0', '#c6ffe9'],
-            blobCount: 18,
-            blobSize: 0.16,
-            spread: 0.55,
-            blur: 24,
-            threshold: 10
-          }
-        },
-        {
-          id: 'ember',
-          label: 'Ember',
-          effect: 'goo',
-          options: {
-            colors: ['#1a0603', '#7a1f0a', '#e0562a', '#ffd08a'],
-            blobCount: 16,
-            blobSize: 0.16,
-            spread: 0.55,
-            blur: 22,
-            threshold: 9
-          }
-        },
-        {
-          id: 'synthwave',
-          label: 'Synthwave',
-          effect: 'grid',
-          options: {
-            colors: ['#12002e', '#4a0f8f', '#ff2d95', '#28e0e0'],
-            horizon: 0.6,
-            spacing: 76,
-            sun: 0.7
-          }
-        },
-        {
-          id: 'miami',
-          label: 'Miami',
-          effect: 'grid',
-          options: {
-            colors: ['#0a1a2f', '#0f5f7a', '#ff9f43', '#5ef2d6'],
-            horizon: 0.66,
-            spacing: 92,
-            glow: 0.6,
-            sun: 0.45
-          }
-        },
-        {
-          id: 'terminal',
-          label: 'Terminal',
-          effect: 'grid',
-          options: {
-            colors: ['#02120a', '#065f3a', '#12c46b', '#c9ffe0'],
-            horizon: 0.55,
-            spacing: 64,
-            vertical: 18,
-            glow: 0.5,
-            sun: 0.2,
-            scanlines: 0.45
-          }
-        },
-        {
-          id: 'neon',
-          label: 'Neon',
-          effect: 'goo',
-          options: {
-            colors: ['#0a0014', '#5a00b3', '#ff2d9b', '#8affe4'],
-            blobCount: 20,
-            blobSize: 0.15,
-            spread: 0.55,
-            blur: 26,
-            threshold: 11,
-            grain: 0.5
-          }
+          label: 'aurora',
+          note: 'Canvas curtains of light and stars',
+          options: { ribbons: 5, ribbonWidth: 0.3, blur: 34, stars: 90 }
         }
       ];
 
-      const presets = document.getElementById('presets');
+      const PALETTES = [
+        { id: 'deep-water', label: 'Deep water', colors: ['#072563', '#133f8b', '#3e7bcd', '#5f9dea'] },
+        { id: 'blush', label: 'Blush', colors: ['#b4828a', '#d29596', '#dcabaa', '#e7b6b5'] },
+        { id: 'mint-grove', label: 'Mint grove', colors: ['#04231a', '#0b6b52', '#17c493', '#c9f7e7'] },
+        { id: 'sunset-haze', label: 'Sunset haze', colors: ['#2b0b3a', '#7a1f56', '#e0563f', '#ffc36b'] },
+        { id: 'graphite', label: 'Graphite', colors: ['#0b0b0c', '#3a3a3f', '#8a8a92', '#f2f2f4'] },
+        { id: 'neon', label: 'Neon', colors: ['#0a0014', '#5a00b3', '#ff2d9b', '#8affe4'] }
+      ];
+
       const code = document.getElementById('code');
-      const note = document.getElementById('note');
-      let current = PRESETS[0];
+      const note = document.getElementById('effect-note');
+      let engine = ENGINES[0];
+      let palette = PALETTES[0];
       let host = null;
       let tab = 'js';
 
@@ -300,28 +202,31 @@
         return rows;
       }
 
-      function jsSnippet(preset) {
-        const rows = flatten({ effect: preset.effect, ...preset.options });
-        const body = rows.map(([path, value], index) => {
-          const comma = index === rows.length - 1 ? '' : ',';
-          return '    ' + JSON.stringify(path) + ': ' + JSON.stringify(value) + comma;
-        });
+      function settings() {
+        return { effect: engine.id, colors: palette.colors, ...engine.options };
+      }
+
+      function jsSnippet() {
+        const rows = flatten(settings());
         return [
           '<script src="dist/backdrops.js"><\/script>',
           '<script>',
           '  Backdrops.page({',
-          ...body,
+          ...rows.map(([path, value], index) => '    ' + JSON.stringify(path) + ': ' + JSON.stringify(value) + (index === rows.length - 1 ? '' : ',')),
           '  });',
           '<\/script>'
         ].join('\n');
       }
 
-      function htmlSnippet(preset) {
-        const rows = flatten(preset.options);
-        const attributes = rows.map(([path, value]) => '         data-backdrop-' + path.replace(/\./g, '-') + '="' + String(value).replace(/,/g, ',') + '"');
+      function htmlSnippet() {
+        const rows = flatten(settings()).filter(([path]) => path !== 'effect');
+        const attributes = rows.map(
+          ([path, value], index) =>
+            '         data-backdrop-' + path.replace(/\./g, '-') + '="' + String(value) + '"' + (index === rows.length - 1 ? '>' : '')
+        );
         return [
-          '<section data-backdrop="' + preset.effect + '"',
-          ...attributes.map((line, index) => line + (index === attributes.length - 1 ? '>' : '')),
+          '<section data-backdrop="' + engine.id + '"',
+          ...attributes,
           '  <h1>Your page</h1>',
           '</section>',
           '<script src="dist/backdrops.js"><\/script>',
@@ -344,39 +249,64 @@
       }
 
       function render() {
-        code.textContent = tab === 'js' ? jsSnippet(current) : htmlSnippet(current);
-        note.textContent = current.effect + ' engine - ' + String(current.options.colors.length) + ' colours';
-        for (const button of presets.children) {
-          button.setAttribute('aria-pressed', String(button.dataset.id === current.id));
+        code.textContent = tab === 'js' ? jsSnippet() : htmlSnippet();
+        note.textContent = engine.label + ' - ' + engine.note;
+        for (const button of document.getElementById('effects').children) {
+          button.setAttribute('aria-pressed', String(button.dataset.id === engine.id));
         }
-        window.__preset = { ...current, snippet: code.textContent };
+        for (const button of document.getElementById('palettes').children) {
+          button.setAttribute('aria-pressed', String(button.dataset.id === palette.id));
+        }
+        window.__demo = { effect: engine.id, palette: palette.id, settings: settings(), snippet: code.textContent };
       }
 
-      function apply(preset) {
+      function apply() {
         if (host) host.destroy();
-        host = Backdrops.page({ effect: preset.effect, ...preset.options });
-        document.documentElement.setAttribute('data-tone', tone(preset.options.colors));
-        current = preset;
+        host = Backdrops.page(settings());
+        document.documentElement.setAttribute('data-tone', tone(palette.colors));
         render();
       }
 
-      for (const preset of PRESETS) {
-        const button = document.createElement('button');
-        button.className = 'preset';
-        button.dataset.id = preset.id;
-        button.title = preset.effect;
-        const label = document.createElement('span');
-        label.textContent = preset.label;
-        const bar = document.createElement('div');
-        bar.className = 'bar';
-        for (const color of preset.options.colors) {
+      function bar(colors) {
+        const strip = document.createElement('div');
+        strip.className = 'bar';
+        for (const color of colors) {
           const cell = document.createElement('i');
           cell.style.background = color;
-          bar.appendChild(cell);
+          strip.appendChild(cell);
         }
-        button.append(label, bar);
-        button.addEventListener('click', () => apply(preset));
-        presets.appendChild(button);
+        return strip;
+      }
+
+      for (const item of ENGINES) {
+        const button = document.createElement('button');
+        button.className = 'choice';
+        button.dataset.id = item.id;
+        button.title = item.note;
+        const label = document.createElement('span');
+        label.textContent = item.label;
+        const hint = document.createElement('small');
+        hint.textContent = item.note.split(',')[0];
+        button.append(label, hint);
+        button.addEventListener('click', () => {
+          engine = item;
+          apply();
+        });
+        document.getElementById('effects').appendChild(button);
+      }
+
+      for (const item of PALETTES) {
+        const button = document.createElement('button');
+        button.className = 'choice';
+        button.dataset.id = item.id;
+        const label = document.createElement('span');
+        label.textContent = item.label;
+        button.append(label, bar(item.colors));
+        button.addEventListener('click', () => {
+          palette = item;
+          apply();
+        });
+        document.getElementById('palettes').appendChild(button);
       }
 
       document.getElementById('tab-js').addEventListener('click', () => {
@@ -395,11 +325,10 @@
 
       document.getElementById('copy').addEventListener('click', () => {
         if (navigator.clipboard) navigator.clipboard.writeText(code.textContent);
-        note.textContent = 'snippet copied';
       });
 
-      apply(PRESETS[0]);
-      window.backdrops = { host: () => host, presets: PRESETS, apply, snippet: () => code.textContent };
+      apply();
+      window.backdrops = { host: () => host, apply, engines: ENGINES, palettes: PALETTES };
     </script>
   </body>
 </html>
