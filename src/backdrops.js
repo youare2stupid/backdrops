@@ -1,4 +1,5 @@
 import { LIQUID } from './engines/liquid.js';
+import { GOO } from './engines/goo.js';
 
 export const VERSION = '0.1.0';
 
@@ -48,7 +49,7 @@ export const RANGES = {
   'dots.shade': [0, 1.5]
 };
 
-var registry = { liquid: LIQUID };
+var registry = { liquid: LIQUID, goo: GOO };
 
 export function register(engine) {
   if (!engine || !engine.id || typeof engine.mount !== 'function') {
@@ -602,6 +603,7 @@ export function create(target, options) {
   if (!draw) {
     cssFallback();
   } else {
+    draw.setConfig(applied, palette);
     mode = engine.api === '2d' ? '2d' : 'canvas';
     if (reduced && base.reducedMotion === 'slow') {
       base = merge(base, { speed: base.speed * 0.15 });

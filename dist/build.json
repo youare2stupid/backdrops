@@ -1,13 +1,14 @@
 {
   "name": "backdrops",
   "version": "0.1.0",
-  "hash": "53ec073a1079d81179fc71fe76887866ccfa27d8b2f1e1e0090a945e9ca035c0",
+  "hash": "6a76b1d123e7f035dfc733b772fb574eadcfdb6cf99db6b0b5b2911034e5c9bc",
   "sources": [
     "src/engines/liquid.js",
+    "src/engines/goo.js",
     "src/backdrops.js"
   ],
   "bytes": {
-    "module": 35954,
-    "global": 35922
+    "module": 42182,
+    "global": 42143
   }
 }

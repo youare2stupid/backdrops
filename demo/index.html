@@ -1,29 +1,31 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-tone="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>backdrops playground</title>
+    <title>backdrops</title>
     <style>
       :root {
-        --ink: #f4f8ff;
-        --dim: rgba(244, 248, 255, 0.62);
-        --panel: rgba(10, 14, 20, 0.62);
-        --line: rgba(255, 255, 255, 0.14);
-        --accent: #8fc4f2;
+        --ink: #f5f8ff;
+        --dim: rgba(245, 248, 255, 0.6);
+        --panel: rgba(8, 12, 18, 0.55);
+        --line: rgba(255, 255, 255, 0.16);
+        --accent: #9fd0f5;
+        --code: rgba(0, 0, 0, 0.3);
       }
-      html[data-theme='light'] {
-        --ink: #241a18;
-        --dim: rgba(36, 26, 24, 0.6);
-        --panel: rgba(255, 250, 248, 0.62);
-        --line: rgba(36, 26, 24, 0.16);
-        --accent: #9c5b4d;
+      html[data-tone='light'] {
+        --ink: #1d1412;
+        --dim: rgba(29, 20, 18, 0.6);
+        --panel: rgba(255, 252, 251, 0.5);
+        --line: rgba(29, 20, 18, 0.18);
+        --accent: #8c4a3d;
+        --code: rgba(255, 255, 255, 0.42);
       }
       * { box-sizing: border-box; }
       html, body { height: 100%; }
       body {
         margin: 0;
-        font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+        font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
         color: var(--ink);
         background: transparent;
         -webkit-font-smoothing: antialiased;
@@ -33,444 +35,328 @@
         min-height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        gap: 18px;
-        padding: clamp(20px, 5vw, 72px);
-        max-width: 900px;
+        justify-content: space-between;
+        padding: clamp(20px, 4vw, 64px);
+        max-width: 1400px;
+        gap: 24px;
       }
-      h1 {
-        margin: 0;
-        font-size: clamp(40px, 9vw, 104px);
-        line-height: 0.95;
-        letter-spacing: -0.045em;
-        font-weight: 800;
-      }
-      .lede { margin: 0; max-width: 46ch; font-size: clamp(15px, 1.5vw, 19px); color: var(--dim); }
-      .hint { margin: 0; font-size: 14px; color: var(--dim); }
-      kbd {
-        font: inherit;
-        border: 1px solid var(--line);
-        border-bottom-width: 2px;
-        border-radius: 6px;
-        padding: 1px 6px;
-      }
-      .stats {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px 18px;
-        font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
-        color: var(--dim);
-      }
-      .stats b { color: var(--ink); font-weight: 600; }
+      header { display: grid; gap: 14px; max-width: 34ch; }
+      h1 { margin: 0; font-size: clamp(38px, 7vw, 92px); line-height: 0.95; letter-spacing: -0.045em; font-weight: 800; }
+      p { margin: 0; color: var(--dim); font-size: clamp(14px, 1.3vw, 17px); }
+      a { color: var(--ink); }
+
       .panel {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        bottom: 16px;
-        width: min(334px, calc(100vw - 32px));
-        overflow: auto;
-        padding: 14px 16px 20px;
+        width: min(430px, 100%);
+        padding: 16px;
         border: 1px solid var(--line);
-        border-radius: 18px;
+        border-radius: 20px;
         background: var(--panel);
-        backdrop-filter: blur(18px) saturate(140%);
-        -webkit-backdrop-filter: blur(18px) saturate(140%);
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
-        overscroll-behavior: contain;
+        backdrop-filter: blur(20px) saturate(140%);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.26);
       }
       .panel h2 {
-        margin: 0;
-        font-size: 13px;
+        margin: 0 0 10px;
+        font-size: 12px;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
         color: var(--dim);
       }
-      .row { display: flex; align-items: center; gap: 10px; }
-      .row--between { justify-content: space-between; }
-      .stack { display: grid; gap: 10px; margin-top: 14px; }
-      .divider { height: 1px; background: var(--line); margin: 16px 0 4px; }
-      button {
-        font: inherit;
+      .presets {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .preset {
+        display: grid;
+        gap: 6px;
+        padding: 8px 9px;
+        text-align: left;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
         color: var(--ink);
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 6px 11px;
-        cursor: pointer;
-      }
-      button:hover { background: rgba(255, 255, 255, 0.16); }
-      button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
-      .presets { display: flex; flex-wrap: wrap; gap: 6px; }
-      .presets button { padding: 5px 9px; font-size: 13px; }
-      .swatches { display: flex; gap: 8px; }
-      .swatches label { flex: 1; }
-      .swatches input {
-        width: 100%;
-        height: 34px;
-        padding: 0;
-        border: 1px solid var(--line);
-        border-radius: 9px;
-        background: none;
-        cursor: pointer;
-      }
-      .control { display: grid; gap: 2px; }
-      .control__head { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--dim); }
-      .control__head b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
-      input[type='range'] { width: 100%; margin: 0; accent-color: var(--accent); }
-      pre {
-        margin: 8px 0 0;
-        padding: 10px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.28);
-        font-size: 11.5px;
-        max-height: 160px;
-        overflow: auto;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-      .toast {
-        position: fixed;
-        left: 16px;
-        bottom: 16px;
-        padding: 8px 13px;
-        border-radius: 10px;
-        background: var(--panel);
-        border: 1px solid var(--line);
+        font: inherit;
         font-size: 13px;
-        opacity: 0;
-        transform: translateY(6px);
-        transition: opacity 0.2s, transform 0.2s;
+        cursor: pointer;
       }
-      .toast.is-on { opacity: 1; transform: none; }
-      @media (max-width: 900px) {
-        .panel { top: auto; left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 52vh; }
-        .stage { justify-content: flex-start; padding-bottom: 54vh; }
+      .preset:hover { background: rgba(255, 255, 255, 0.14); }
+      .preset[aria-pressed='true'] { border-color: var(--accent); }
+      .preset span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .bar { display: flex; height: 12px; border-radius: 4px; overflow: hidden; }
+      .bar i { flex: 1; }
+
+      .tabs { display: flex; gap: 6px; margin: 14px 0 8px; }
+      .tabs button, .copy {
+        font: inherit;
+        font-size: 12.5px;
+        padding: 4px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: none;
+        color: var(--dim);
+        cursor: pointer;
+      }
+      .tabs button[aria-pressed='true'] { color: var(--ink); border-color: var(--accent); }
+      .copy { float: right; }
+      pre {
+        clear: both;
+        margin: 0;
+        padding: 12px;
+        border-radius: 12px;
+        background: var(--code);
+        font: 11.5px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+        max-height: 44vh;
+        overflow: auto;
+        white-space: pre;
+      }
+      .note { font-size: 12.5px; color: var(--dim); margin-top: 8px; }
+      @media (max-width: 720px) {
+        .stage { justify-content: flex-start; padding-bottom: 60vh; }
+        .panel { position: fixed; left: 10px; right: 10px; bottom: 10px; }
+        pre { max-height: 30vh; }
       }
     </style>
   </head>
   <body>
     <main class="stage">
-      <h1>backdrops</h1>
-      <p class="lede">
-        Animated backgrounds you can dial in. Liquid noise field, halftone dots and grain, all driven by one
-        script tag and a config object.
-      </p>
-      <p class="hint">
-        Move anything on the right and the field follows. Press <kbd>C</kbd> to copy the config, <kbd>R</kbd> to
-        shuffle, <kbd>space</kbd> to pause.
-      </p>
-      <div class="stats" id="stats"></div>
-    </main>
+      <header>
+        <h1>backdrops</h1>
+        <p>Animated backgrounds for the web. Pick one below and copy the snippet.</p>
+        <p><a href="./script-tag.html">the same thing from data attributes</a></p>
+      </header>
 
-    <aside class="panel">
-      <div class="row row--between">
-        <h2>controls</h2>
-        <div class="row">
-          <button id="theme" title="switch theme">light</button>
-          <button id="play" aria-pressed="false">pause</button>
-        </div>
-      </div>
-
-      <div class="stack">
+      <section class="panel">
+        <h2>ready made</h2>
         <div class="presets" id="presets"></div>
-        <div class="presets">
-          <button id="dots" aria-pressed="true">dots</button>
-          <button id="still">freeze</button>
+        <div class="tabs">
+          <button id="tab-js" aria-pressed="true">javascript</button>
+          <button id="tab-html" aria-pressed="false">markup</button>
+          <button class="copy" id="copy">copy</button>
         </div>
-        <div class="swatches" id="swatches"></div>
-        <div id="controls"></div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="row row--between" style="margin-top: 12px">
-        <h2>config</h2>
-        <div class="row">
-          <button id="shuffle">shuffle</button>
-          <button id="copy">copy</button>
-        </div>
-      </div>
-      <pre id="snippet"></pre>
-    </aside>
-
-    <div class="toast" id="toast"></div>
+        <pre id="code"></pre>
+        <p class="note" id="note"></p>
+      </section>
+    </main>
 
     <script type="module">
       import Backdrops from '../src/backdrops.js';
 
-      const VIEWS = {
-        dark: {
-          colors: ['#072563', '#133f8b', '#3e7bcd', '#5f9dea'],
-          contrast: 1.5,
-          dots: { base: 0.74, gain: 0.6, shade: 0.86 },
-          vignette: 0.16,
-          grain: 0.9
+      const PRESETS = [
+        {
+          id: 'deep-water',
+          label: 'Deep water',
+          effect: 'liquid',
+          options: {
+            colors: ['#072563', '#133f8b', '#3e7bcd', '#5f9dea'],
+            contrast: 1.5,
+            grain: 0.9,
+            vignette: 0.16
+          }
         },
-        light: {
-          colors: ['#b4828a', '#d29596', '#dcabaa', '#e7b6b5'],
-          contrast: 1.3,
-          dots: { base: 0.72, gain: 0.55, shade: 0.92 },
-          vignette: 0.08,
-          grain: 0.7
+        {
+          id: 'blush',
+          label: 'Blush',
+          effect: 'liquid',
+          options: {
+            colors: ['#b4828a', '#d29596', '#dcabaa', '#e7b6b5'],
+            contrast: 1.3,
+            grain: 0.7,
+            vignette: 0.08
+          }
+        },
+        {
+          id: 'mint-grove',
+          label: 'Mint grove',
+          effect: 'liquid',
+          options: {
+            colors: ['#04231a', '#0b6b52', '#17c493', '#c9f7e7'],
+            contrast: 1.35,
+            warp: 3.4,
+            grain: 0.8
+          }
+        },
+        {
+          id: 'sunset-haze',
+          label: 'Sunset haze',
+          effect: 'liquid',
+          options: {
+            colors: ['#2b0b3a', '#7a1f56', '#e0563f', '#ffc36b'],
+            scale: 2.8,
+            contrast: 1.45,
+            dots: { pitch: 4, size: 1.5 }
+          }
+        },
+        {
+          id: 'graphite',
+          label: 'Graphite',
+          effect: 'liquid',
+          options: {
+            colors: ['#0b0b0c', '#3a3a3f', '#8a8a92', '#f2f2f4'],
+            contrast: 1.6,
+            grain: 1.1,
+            dots: { on: false }
+          }
+        },
+        {
+          id: 'aurora',
+          label: 'Aurora',
+          effect: 'goo',
+          options: {
+            colors: ['#021a2a', '#0a6b7a', '#2fd0b0', '#c6ffe9'],
+            blobCount: 18,
+            blobSize: 0.16,
+            spread: 0.55,
+            blur: 24,
+            threshold: 10
+          }
+        },
+        {
+          id: 'ember',
+          label: 'Ember',
+          effect: 'goo',
+          options: {
+            colors: ['#1a0603', '#7a1f0a', '#e0562a', '#ffd08a'],
+            blobCount: 16,
+            blobSize: 0.16,
+            spread: 0.55,
+            blur: 22,
+            threshold: 9
+          }
+        },
+        {
+          id: 'neon',
+          label: 'Neon',
+          effect: 'goo',
+          options: {
+            colors: ['#0a0014', '#5a00b3', '#ff2d9b', '#8affe4'],
+            blobCount: 20,
+            blobSize: 0.15,
+            spread: 0.55,
+            blur: 26,
+            threshold: 11,
+            grain: 0.5
+          }
         }
-      };
-
-      const PRESETS = {
-        midnight: ['#072563', '#133f8b', '#3e7bcd', '#5f9dea'],
-        peach: ['#b4828a', '#d29596', '#dcabaa', '#e7b6b5'],
-        mint: ['#04231a', '#0b6b52', '#17c493', '#c9f7e7'],
-        sunset: ['#2b0b3a', '#7a1f56', '#e0563f', '#ffc36b'],
-        neon: ['#0a0014', '#5a00b3', '#ff2d9b', '#8affe4'],
-        mono: ['#0b0b0c', '#3a3a3f', '#8a8a92', '#f2f2f4']
-      };
-
-      const SLIDERS = [
-        ['scale', 0.2, 12, 0.05],
-        ['speed', 0, 4, 0.05],
-        ['contrast', 0.2, 4, 0.05],
-        ['warp', 0, 8, 0.1],
-        ['octaves', 1, 6, 1],
-        ['grain', 0, 3, 0.05],
-        ['vignette', 0, 1, 0.01],
-        ['dots.pitch', 1, 24, 0.1],
-        ['dots.size', 0, 4, 0.05],
-        ['dots.jitter', 0, 2, 0.05],
-        ['dots.base', -2, 2, 0.05],
-        ['dots.gain', -2, 2, 0.05],
-        ['quality', 0.5, 2, 0.05],
-        ['seed', 0, 10, 0.01]
       ];
 
-      const host = Backdrops.page({
-        effect: 'liquid',
-        views: VIEWS,
-        theme: 'auto',
-        themeAttribute: 'data-theme',
-        themeFade: 600,
-        colors: VIEWS.dark.colors
-      });
+      const presets = document.getElementById('presets');
+      const code = document.getElementById('code');
+      const note = document.getElementById('note');
+      let current = PRESETS[0];
+      let host = null;
+      let tab = 'js';
 
-      const $ = (id) => document.getElementById(id);
-      const stats = $('stats');
-      const snippet = $('snippet');
-      const toast = $('toast');
-      const colorInputs = [];
-      const sliders = {};
-
-      function read(path) {
-        return path.split('.').reduce((node, part) => (node == null ? undefined : node[part]), host.config);
+      function flatten(options, prefix) {
+        const rows = [];
+        for (const [key, value] of Object.entries(options)) {
+          const path = prefix ? prefix + '.' + key : key;
+          if (value && typeof value === 'object' && !Array.isArray(value)) rows.push(...flatten(value, path));
+          else rows.push([path, value]);
+        }
+        return rows;
       }
 
-      function currentView() {
-        return host.stats().view || 'dark';
+      function jsSnippet(preset) {
+        const rows = flatten({ effect: preset.effect, ...preset.options });
+        const body = rows.map(([path, value], index) => {
+          const comma = index === rows.length - 1 ? '' : ',';
+          return '    ' + JSON.stringify(path) + ': ' + JSON.stringify(value) + comma;
+        });
+        return [
+          '<script src="dist/backdrops.js"><\/script>',
+          '<script>',
+          '  Backdrops.page({',
+          ...body,
+          '  });',
+          '<\/script>'
+        ].join('\n');
       }
 
-      for (const [name, colors] of Object.entries(PRESETS)) {
+      function htmlSnippet(preset) {
+        const rows = flatten(preset.options);
+        const attributes = rows.map(([path, value]) => '         data-backdrop-' + path.replace(/\./g, '-') + '="' + String(value).replace(/,/g, ',') + '"');
+        return [
+          '<section data-backdrop="' + preset.effect + '"',
+          ...attributes.map((line, index) => line + (index === attributes.length - 1 ? '>' : '')),
+          '  <h1>Your page</h1>',
+          '</section>',
+          '<script src="dist/backdrops.js"><\/script>',
+          '<script>Backdrops.ready();<\/script>'
+        ].join('\n');
+      }
+
+      function tone(colors) {
+        let sum = 0;
+        let count = 0;
+        for (const value of colors) {
+          const hex = String(value).replace('#', '');
+          const full = hex.length === 3 ? hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] : hex;
+          const int = parseInt(full.slice(0, 6), 16);
+          if (isNaN(int)) continue;
+          sum += (0.2126 * ((int >> 16) & 255) + 0.7152 * ((int >> 8) & 255) + 0.0722 * (int & 255)) / 255;
+          count++;
+        }
+        return count && sum / count > 0.55 ? 'light' : 'dark';
+      }
+
+      function render() {
+        code.textContent = tab === 'js' ? jsSnippet(current) : htmlSnippet(current);
+        note.textContent = current.effect + ' engine - ' + String(current.options.colors.length) + ' colours';
+        for (const button of presets.children) {
+          button.setAttribute('aria-pressed', String(button.dataset.id === current.id));
+        }
+        window.__preset = { ...current, snippet: code.textContent };
+      }
+
+      function apply(preset) {
+        if (host) host.destroy();
+        host = Backdrops.page({ effect: preset.effect, ...preset.options });
+        document.documentElement.setAttribute('data-tone', tone(preset.options.colors));
+        current = preset;
+        render();
+      }
+
+      for (const preset of PRESETS) {
         const button = document.createElement('button');
-        button.textContent = name;
-        button.addEventListener('click', () => {
-          host.set({ colors });
-          colorInputs.forEach((input, index) => {
-            input.value = colors[index] || colors[colors.length - 1];
-          });
-          refresh();
-        });
-        $('presets').appendChild(button);
-      }
-
-      for (let index = 0; index < 4; index++) {
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        input.type = 'color';
-        input.value = VIEWS.dark.colors[index];
-        input.addEventListener('input', () => {
-          host.set({ colors: colorInputs.map((item) => item.value) });
-          refresh();
-        });
-        label.appendChild(input);
-        $('swatches').appendChild(label);
-        colorInputs.push(input);
-      }
-
-      for (const [path, min, max, step] of SLIDERS) {
-        const wrap = document.createElement('div');
-        wrap.className = 'control';
-        const head = document.createElement('div');
-        head.className = 'control__head';
+        button.className = 'preset';
+        button.dataset.id = preset.id;
+        button.title = preset.effect;
         const label = document.createElement('span');
-        label.textContent = path;
-        const value = document.createElement('b');
-        head.append(label, value);
-        const input = document.createElement('input');
-        input.type = 'range';
-        input.min = String(min);
-        input.max = String(max);
-        input.step = String(step);
-        input.addEventListener('input', () => {
-          const next = Number(input.value);
-          const parts = path.split('.');
-          const patch = parts.length === 1 ? { [parts[0]]: next } : { [parts[0]]: { [parts[1]]: next } };
-          host.set(patch);
-          value.textContent = format(input.value);
-          refresh();
-        });
-        wrap.append(head, input);
-        $('controls').appendChild(wrap);
-        sliders[path] = { input, value };
-      }
-
-      function format(value) {
-        const number = Number(value);
-        return Number.isInteger(number) ? String(number) : number.toFixed(2);
-      }
-
-      function sync() {
-        const config = host.config;
-        colorInputs.forEach((input, index) => {
-          if (config.colors && config.colors[index]) input.value = config.colors[index];
-        });
-        for (const [path, parts] of Object.entries(sliders)) {
-          const value = read(path);
-          parts.input.value = String(value);
-          parts.value.textContent = format(value);
+        label.textContent = preset.label;
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        for (const color of preset.options.colors) {
+          const cell = document.createElement('i');
+          cell.style.background = color;
+          bar.appendChild(cell);
         }
-        $('theme').textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        $('play').textContent = host.running ? 'pause' : 'play';
-        $('play').setAttribute('aria-pressed', host.running ? 'false' : 'true');
+        button.append(label, bar);
+        button.addEventListener('click', () => apply(preset));
+        presets.appendChild(button);
       }
 
-      function configJson() {
-        const config = host.config;
-        return {
-          effect: config.effect,
-          colors: config.colors,
-          scale: round(config.scale),
-          speed: round(config.speed),
-          contrast: round(config.contrast),
-          warp: round(config.warp),
-          octaves: config.octaves,
-          grain: round(config.grain),
-          vignette: round(config.vignette),
-          seed: round(config.seed),
-          dots: {
-            on: config.dots.on,
-            pitch: round(config.dots.pitch),
-            size: round(config.dots.size),
-            jitter: round(config.dots.jitter),
-            base: round(config.dots.base),
-            gain: round(config.dots.gain)
-          }
-        };
-      }
-
-      function round(value) {
-        return Math.round(value * 100) / 100;
-      }
-
-      function refresh() {
-        snippet.textContent = 'Backdrops.page(' + JSON.stringify(configJson(), null, 2) + ')';
-      }
-
-      function say(text) {
-        toast.textContent = text;
-        toast.classList.add('is-on');
-        clearTimeout(say.timer);
-        say.timer = setTimeout(() => toast.classList.remove('is-on'), 1400);
-      }
-
-      $('theme').addEventListener('click', () => {
-        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        setTimeout(sync, host.config.themeFade + 60);
-        say(next + ' theme');
+      document.getElementById('tab-js').addEventListener('click', () => {
+        tab = 'js';
+        document.getElementById('tab-js').setAttribute('aria-pressed', 'true');
+        document.getElementById('tab-html').setAttribute('aria-pressed', 'false');
+        render();
       });
 
-      $('play').addEventListener('click', () => {
-        if (host.running) host.pause();
-        else host.play();
-        sync();
+      document.getElementById('tab-html').addEventListener('click', () => {
+        tab = 'html';
+        document.getElementById('tab-html').setAttribute('aria-pressed', 'true');
+        document.getElementById('tab-js').setAttribute('aria-pressed', 'false');
+        render();
       });
 
-      $('dots').addEventListener('click', () => {
-        const on = !host.config.dots.on;
-        host.set({ dots: { on } });
-        $('dots').setAttribute('aria-pressed', on ? 'true' : 'false');
-        refresh();
+      document.getElementById('copy').addEventListener('click', () => {
+        if (navigator.clipboard) navigator.clipboard.writeText(code.textContent);
+        note.textContent = 'snippet copied';
       });
 
-      $('still').addEventListener('click', () => {
-        const speed = host.config.speed > 0 ? 0 : 1;
-        host.set({ speed });
-        sliders.speed.input.value = String(speed);
-        sliders.speed.value.textContent = format(speed);
-        $('still').setAttribute('aria-pressed', speed === 0 ? 'true' : 'false');
-        sync();
-        refresh();
-      });
-
-      $('shuffle').addEventListener('click', shuffle);
-      $('copy').addEventListener('click', copy);
-
-      function copy() {
-        const text = snippet.textContent;
-        if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => say('config copied'), () => say('copy blocked'));
-        else say('copy blocked');
-      }
-
-      function shuffle() {
-        const pick = () => {
-          const hue = Math.random() * 360;
-          return (lightness, saturation) => hsl(hue + Math.random() * 40, saturation, lightness);
-        };
-        const base = pick();
-        host.set({
-          colors: [base(0.08, 45), base(0.28, 55), base(0.56, 70), base(0.82, 80)]
-        });
-        for (const [path, min, max, step] of SLIDERS) {
-          if (path === 'quality') continue;
-          const value = min + Math.random() * (max - min);
-          const parts = path.split('.');
-          host.set(parts.length === 1 ? { [parts[0]]: value } : { [parts[0]]: { [parts[1]]: value } });
-        }
-        sync();
-        refresh();
-      }
-
-      function hsl(h, s, l) {
-        h = ((h % 360) + 360) % 360;
-        return 'hsl(' + Math.round(h) + ' ' + Math.round(s) + '% ' + Math.round(l * 100) + '%)';
-      }
-
-      document.addEventListener('keydown', (event) => {
-        if (event.target.matches('input')) return;
-        if (event.key === 'c' || event.key === 'C') copy();
-        if (event.key === 'r' || event.key === 'R') shuffle();
-        if (event.key === ' ') {
-          event.preventDefault();
-          if (host.running) host.pause();
-          else host.play();
-          sync();
-        }
-      });
-
-      setInterval(() => {
-        const info = host.stats();
-        stats.innerHTML =
-          '<span>fps <b>' + info.fps + '</b></span>' +
-          '<span>frames <b>' + info.frames + '</b></span>' +
-          '<span>mode <b>' + info.mode + '</b></span>' +
-          '<span>buffer <b>' + info.size.w + 'x' + info.size.h + '</b></span>' +
-          '<span>scale <b>' + info.size.dpr.toFixed(2) + '</b></span>' +
-          '<span>view <b>' + (info.view || 'base') + '</b></span>' +
-          '<span>quality <b>' + info.quality.toFixed(2) + '</b></span>' +
-          '<span>reduced motion <b>' + (info.reduced ? 'yes' : 'no') + '</b></span>';
-      }, 500);
-
-      sync();
-      refresh();
-      window.host = host;
-      window.shuffle = shuffle;
-      window.snapshot = () => ({ ...configJson(), mode: host.mode, fps: host.stats().fps, frames: host.stats().frames });
+      apply(PRESETS[0]);
+      window.backdrops = { host: () => host, presets: PRESETS, apply, snippet: () => code.textContent };
     </script>
   </body>
 </html>

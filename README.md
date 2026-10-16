@@ -3,8 +3,9 @@
 Animated backgrounds for the web. A liquid noise field, halftone dots and film grain, driven by one config
 object. No dependencies, no build step for you: one script tag, or one import.
 
-![dark](docs/dark.jpg)
-![light](docs/light.jpg)
+![liquid, dark palette](docs/dark.jpg)
+![liquid, light palette](docs/light.jpg)
+![goo](docs/goo.jpg)
 
 ## Use it
 
@@ -143,7 +144,22 @@ Backdrops.register({
 Backdrops.page({ effect: 'waves' });
 ```
 
-`Backdrops.effects()` lists what is loaded. The first engine, `liquid`, is the one in the screenshots.
+`Backdrops.effects()` lists what is loaded. Two engines ship today:
+
+| Engine | Draws | Needs |
+| --- | --- | --- |
+| `liquid` | domain warped noise, colour ramp, halftone dots, grain | WebGL |
+| `goo` | soft blobs that melt into each other | Canvas 2D, canvas filters |
+
+`liquid` options on top of the shared ones: `scale`, `contrast`, `warp`, `octaves`, `grain`, `dots.*`,
+`seed`, `debug: 'field'`.
+`goo` options: `blobCount`, `blobSize`, `spread`, `wobble`, `softness`, `blur`, `threshold`,
+`background`, `renderScale`, `debug: 'raw'`.
+
+## Gallery
+
+`demo/index.html` shows eight ready made looks on both engines. Pick one and the snippet for it is right
+there, in JavaScript or as data attributes.
 
 ## Development
 
