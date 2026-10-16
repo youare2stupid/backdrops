@@ -79,7 +79,7 @@ test('normalize caps the palette at eight stops', () => {
   assert.equal(normalize({ colors }).colors.length, 8);
 });
 
-test('the liquid effect ships with the build', () => {
-  assert.ok(effects().includes('liquid'));
+test('every engine ships with the build', () => {
+  assert.deepEqual(effects().sort(), ['goo', 'grid', 'liquid']);
   assert.match(VERSION, /^\d+\.\d+\.\d+$/);
 });

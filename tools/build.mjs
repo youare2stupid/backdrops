@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ENGINES = ['src/engines/liquid.js', 'src/engines/goo.js'];
+const ENGINES = ['src/engines/liquid.js', 'src/engines/goo.js', 'src/engines/grid.js'];
 const CORE = 'src/backdrops.js';
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 

@@ -1,5 +1,6 @@
 import { LIQUID } from './engines/liquid.js';
 import { GOO } from './engines/goo.js';
+import { GRID } from './engines/grid.js';
 
 export const VERSION = '0.1.0';
 
@@ -49,7 +50,7 @@ export const RANGES = {
   'dots.shade': [0, 1.5]
 };
 
-var registry = { liquid: LIQUID, goo: GOO };
+var registry = { liquid: LIQUID, goo: GOO, grid: GRID };
 
 export function register(engine) {
   if (!engine || !engine.id || typeof engine.mount !== 'function') {
@@ -482,11 +483,15 @@ export function create(target, options) {
         costSamples = 0;
       }
     }
-    if (lastStamp) time += Math.min(0.1, (now - lastStamp) / 1000);
+    var delta = 0;
+    if (lastStamp) {
+      delta = Math.min(0.1, (now - lastStamp) / 1000);
+      time += delta;
+    }
     lastStamp = now;
     stepFade(now);
     draw.resize(measure());
-    draw.draw({ time: still ? (applied || base).stillFrame : time, delta: time, frame: frames, still: still });
+    draw.draw({ time: still ? (applied || base).stillFrame : time, delta: delta, frame: frames, still: still });
     frames++;
     fpsFrames++;
     if (!fpsStamp) fpsStamp = now;

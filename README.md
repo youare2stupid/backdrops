@@ -6,6 +6,7 @@ object. No dependencies, no build step for you: one script tag, or one import.
 ![liquid, dark palette](docs/dark.jpg)
 ![liquid, light palette](docs/light.jpg)
 ![goo](docs/goo.jpg)
+![grid](docs/grid.jpg)
 
 ## Use it
 
@@ -151,11 +152,14 @@ Backdrops.page({ effect: 'waves' });
 | --- | --- | --- |
 | `liquid` | domain warped noise, colour ramp, halftone dots, grain | WebGL |
 | `goo` | soft blobs that melt into each other | Canvas 2D, canvas filters |
+| `grid` | a perspective grid running to a glowing horizon, with a striped sun and scanlines | Canvas 2D |
 
 `liquid` options on top of the shared ones: `scale`, `contrast`, `warp`, `octaves`, `grain`, `dots.*`,
 `seed`, `debug: 'field'`.
 `goo` options: `blobCount`, `blobSize`, `spread`, `wobble`, `softness`, `blur`, `threshold`,
 `background`, `renderScale`, `debug: 'raw'`.
+`grid` options: `horizon`, `spacing`, `depth`, `vertical`, `lineWidth`, `glow`, `fade`, `horizonGlow`,
+`sun`, `sunSize`, `scanlines`, `sway`, `background`, `renderScale`.
 
 ## Text that follows the field
 
@@ -175,7 +179,7 @@ tone instead of inverting. Keep the blended elements out of isolated stacking co
 
 ## Gallery
 
-`demo/index.html` shows eight ready made looks on both engines. Pick one and the snippet for it is right
+`demo/index.html` shows eleven ready made looks across the three engines. Pick one and the snippet for it is right
 there, in JavaScript or as data attributes.
 
 ## Development
